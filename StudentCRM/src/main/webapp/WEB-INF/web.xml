@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" version="4.0">
+  <display-name>StudentCRM</display-name>
+  <welcome-file-list>
+  <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  
+   <listener>  
+         
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>  
+         
+    </listener>  
+    <listener>  
+    <listener-class> org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>  
+     <context-param>  
+            <param-name>contextConfigLocation</param-name>  
+            <param-value> 
+            /WEB-INF/spring-security.xml  
+            </param-value>  
+        </context-param> 
+  <filter>  
+        <filter-name>springSecurityFilterChain</filter-name>  
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>  
+    </filter> 
+     <filter-mapping>  
+        <filter-name>springSecurityFilterChain</filter-name>  
+        <url-pattern>/*</url-pattern>  
+    </filter-mapping>  
+    
+ 
+  
+  <!-- Spring MVC Configuration -->
+  <!-- Started Step 1: Configure Spring MVC Dispatcher  Servlet-->
+  <servlet>
+  	<servlet-name>Dispatcher</servlet-name>
+  	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+  	<init-param>
+  	<param-name>contextConfigLocation</param-name>
+  	<param-value>/WEB-INF/spring-mvc-servlet.xml</param-value>
+  	</init-param>
+  	<load-on-startup>1</load-on-startup>
+    </servlet>
+     <!--Ended Step 1: Configure Spring MVC Dispatcher -->
+     
+   <servlet>
+  	<servlet-name>TestDBServlet</servlet-name>
+  	<servlet-class>com.student_crm.jdbc.TestDBServlet</servlet-class>
+  </servlet> 
+  
+  <!-- Started Step 2: Setup URL Mapping For Spring MVC Dispatcher Servlet-->
+  <servlet-mapping>
+  	<servlet-name>Dispatcher</servlet-name>
+  	<url-pattern>/</url-pattern>
+  </servlet-mapping>
+   <!-- Ended Step 2: Setup URL Mapping For Spring MVC Dispatcher Servlet-->
+  
+  <servlet-mapping>
+  	<servlet-name>TestDBServlet</servlet-name>
+  	<url-pattern>/TestDBServlet</url-pattern>
+  </servlet-mapping> 
+  
+</web-app>

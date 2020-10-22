@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"  
+    xmlns:beans="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans  
+    http://www.springframework.org/schema/beans/spring-beans.xsd 
+    http://www.springframework.org/schema/security  
+    http://www.springframework.org/schema/security/spring-security-5.3.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">  
+<!--    <http>  
+<intercept-url pattern="/**" access="authenticated"/>  
+<form-login />  
+<http-basic />  
+</http>  -->
+<!-- Step 3: Add Support For Component Scanning -->
+<!-- <context:component-scan base-package="com.student_crm"/> -->
+<context:annotation-config/>
+<beans:import resource="spring-mvc-servlet.xml"/>
+
+    <http auto-config="true" create-session="never" authentication-manager-ref="authenticationManager">  
+   <!--  <csrf disabled="true"/>
+         
+        <intercept-url pattern="/" access="permitAll()" /> -->
+        <intercept-url method="GET" pattern="/api/customers" access="hasAnyRole('ROLE_EMPLOYEE','ROLE_MANAGER','ROLE_ADMIN')" />  
+        <intercept-url method="GET" pattern="/api/customers/**" access="hasAnyRole('ROLE_EMPLOYEE','ROLE_MANAGER','ROLE_ADMIN')" /> 
+        <intercept-url method="POST" pattern="/api/customers" access="hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')" /> 
+        <intercept-url method="POST" pattern="/api/customers/**" access="hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')" /> 
+        <intercept-url method="PUT" pattern="/api/customers" access="hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')" /> 
+        <intercept-url method="PUT" pattern="/api/customers/**" access="hasAnyRole('ROLE_MANAGER','ROLE_ADMIN')" /> 
+        <intercept-url method="DELETE" pattern="/api/customers/**" access="hasRole('ROLE_ADMIN')" /> 
+        <http-basic/>
+        <csrf disabled="true"/>
+    </http>  
+    <authentication-manager alias="authenticationManager" id="authenticationManager">  
+    
+   
+     <!--  <authentication-provider>  
+        <user-service >  
+        <user name="parth" password="{noop}Test@1234" authorities="ROLE_EMPLOYEE" /> hasRole('ROLE_EMPLOYEE') 
+         <user name="omkar" password="{noop}Test@123" authorities="ROLE_EMPLOYEE,ROLE_MANAGER" /> 
+          <user name="nikhil" password="{noop}Test@123" authorities="ROLE_EMPLOYEE,ROLE_ADMIN" /> 
+        </user-service>  
+      </authentication-provider>   -->
+      <!-- authentication from database -->
+     
+        <authentication-provider ref="myauthenticationProvider" >
+        
+         <!-- <password-encoder ref="mypasswordEncoder"/> -->
+            <!--ref="authenticationProvider" <jdbc-user-service data-source-ref="myDataSource" /> -->
+           
+            <!-- 
+             users-by-username-query="select username,password, enabled from users where username=?"
+       authorities-by-username-query="Select username, concat('ROLE_',user_role) user_role from user_roles where username=?" 
+        -->
+                </authentication-provider>
+    </authentication-manager>  
+    
+   
+   
+       <beans:bean id="userService"   class="com.student_crm.service.UserServiceImpl"> 
+     
+      </beans:bean> 
+      
+       <beans:bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+</beans:bean>
+       
+
+<beans:bean id="myauthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+<beans:property name="userDetailsService" ref="userService"/>
+<beans:property name="passwordEncoder"  ref="passwordEncoder"/>
+</beans:bean>
+    
+</beans:beans>  
