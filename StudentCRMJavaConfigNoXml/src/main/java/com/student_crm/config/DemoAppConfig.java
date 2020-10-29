@@ -175,26 +175,43 @@ public class DemoAppConfig implements WebMvcConfigurer {
 		return sessionFactory;
 	}
 	
-	@Bean
+	/*@Bean
 	@Autowired
-	@Qualifier(value="transactionManager")
+	//@Qualifier(value="transactionManager")
 	public HibernateTransactionManager transactionManager() {
-
 		// setup transaction manager based on session factory
 		HibernateTransactionManager txManager = new HibernateTransactionManager();
 		txManager.setSessionFactory(sessionFactory().getObject());
-
 		return txManager;
 	}
-
 	@Bean
 	@Autowired
-	@Qualifier(value="securityTransactionManager")
+	//@Qualifier(value="securityTransactionManager")
 	public HibernateTransactionManager securityTransactionManager() {
-
 		// setup transaction manager based on session factory
 		HibernateTransactionManager txManager = new HibernateTransactionManager();
 		txManager.setSessionFactory(securitySessionFactory().getObject());
+		return txManager;
+	}*/
+	
+	@Bean
+	@Autowired
+	public HibernateTransactionManager transactionManager(@Qualifier("sessionFactory") SessionFactory sessionFactory) {
+		
+		// setup transaction manager based on session factory
+		HibernateTransactionManager txManager = new HibernateTransactionManager();
+		txManager.setSessionFactory(sessionFactory);
+
+		return txManager;
+	}
+	
+	@Bean
+	@Autowired
+	public HibernateTransactionManager securityTransactionManager(@Qualifier("securitySessionFactory") SessionFactory sessionFactory) {
+		
+		// setup transaction manager based on session factory
+		HibernateTransactionManager txManager = new HibernateTransactionManager();
+		txManager.setSessionFactory(sessionFactory);
 
 		return txManager;
 	}
